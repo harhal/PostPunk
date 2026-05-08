@@ -1,17 +1,17 @@
 using System;
 using UnityEngine;
 
-[System.Serializable]
-
-public class BycicleWheelBase : MonoBehaviour
+[Serializable]
+public class BycicleWheel : MonoBehaviour
 {
+    [field: SerializeField]
+    public VirtualWheel virtualWheel {get; protected set;}
+}
 
-    [SerializeField]
-    protected Transform wheelMesh;
-
-    [SerializeField]
-    public VirtualWheel virtualWheel;
-
+[Serializable]
+[RequireComponent(typeof(BycicleWheel))]
+public class BycicleWheelProcessor : MonoBehaviour
+{
     [SerializeField]
     protected bool bBreakIsActive = false;
 
@@ -25,6 +25,10 @@ public class BycicleWheelBase : MonoBehaviour
     [SerializeField]
     protected PhysicsMaterial groundMaterial;
 
+    protected BycicleWheel wheel;
+
+    protected VirtualWheel virtualWheel => wheel.virtualWheel;
+
     public float DisplayAngSpeed => virtualWheel.DisplayAngSpeed;
 
     public float LinearVelocity => virtualWheel.LinearVelocity;
@@ -36,10 +40,15 @@ public class BycicleWheelBase : MonoBehaviour
 
     public float Inertia => virtualWheel.Inertia;
 
-    protected virtual void Update()
+    public float Angle => virtualWheel.AngleDeg;
+
+    public float Radius => virtualWheel.Radius;
+
+    void Awake()
     {
-        wheelMesh.transform.SetLocalPositionAndRotation(wheelMesh.transform.localPosition, Quaternion.Euler(virtualWheel.AngleDeg, .0f, .0f));
-    }    
+        wheel = GetComponent<BycicleWheel>();
+        enabled = wheel == null;
+    }
 
     public void SetBrakeActive(bool bActive)
     {

@@ -34,6 +34,6 @@ public class BycicleSpeedDisplay : MonoBehaviour
     {
         velocityDisplay.SetText(String.Format("{0:F2} T{1} x{2:F2}", engine.DisplayVelocity.z / 1000f * 3600f, transmission.GetCurrentTransmission(), transmission.GetCurrentRatio()));
         inputSpeedDisplay.SetText(String.Format("{0:F2} -> {1:F2} -> {2:F2} -> {3:F2} -> {4:F2}", inputWheel.DisplayAngSpeed, transmission.GetCurrentRatio() * inputWheel.DisplayAngSpeed, 
-            driveWheel.DisplayAngSpeed, driveWheel.DisplayAngSpeed * Mathf.Deg2Rad * driveWheel.virtualWheel.Radius / 1000f * 3600f, engine.DisplayVelocity.z / 1000f * 3600f));
+            driveWheel.DisplayAngSpeed, driveWheel.DisplayAngSpeed * Mathf.Deg2Rad * driveWheel.Radius / 1000f * 3600f, engine.DisplayVelocity.z / 1000f * 3600f));
     }
 }

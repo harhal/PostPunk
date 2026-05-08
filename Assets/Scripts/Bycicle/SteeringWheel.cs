@@ -1,24 +1,19 @@
 using UnityEngine;
 
-public class BycicleSteeringWheel : BycicleWheelBase
+[RequireComponent(typeof(BycicleWheel))]
+public class BycicleSteeringWheel : BycicleWheelProcessor
 {    
     [SerializeField]
     private float maxSteeringAngle = 30.0f;
 
-    [SerializeField]
-    private float steeringAngle;
+    [field: SerializeField]
+    public float steeringAngle {get; private set;}
 
     [SerializeField]
     private float wheelsDist = 1.0f;
 
     [SerializeField]
     private Transform steeringMesh;
-
-    protected override void Update()
-    {
-        base.Update();
-        steeringMesh.SetLocalPositionAndRotation(steeringMesh.localPosition, GetLocalRotation());
-    }
 
     public void PushSteeringInput(float input)
     {

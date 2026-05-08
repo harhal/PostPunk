@@ -1,5 +1,3 @@
-using System;
-using System.Linq;
 using UnityEngine;
 
 public enum PhysDirection
@@ -30,12 +28,12 @@ public static class PhysHelper
 
         return forceMode switch
         {
-            ForceMode.Acceleration => 
-                unrotatedVelocity / deltaTime + unrotatedForce / mass,
             ForceMode.Force => 
                 unrotatedVelocity * mass / deltaTime + unrotatedForce,
             ForceMode.Impulse => 
                 unrotatedVelocity * mass + unrotatedForce * deltaTime,
+            ForceMode.Acceleration => 
+                unrotatedVelocity / deltaTime + unrotatedForce / mass,
             ForceMode.VelocityChange => 
                 unrotatedVelocity + unrotatedForce / mass * deltaTime,
             _ => Vector3.zero
@@ -45,6 +43,49 @@ public static class PhysHelper
     public static Vector3 UnrotateForces(Rigidbody rb, float deltaTime, ForceMode forceMode)
     {
         return UnrotateForces(rb.linearVelocity, rb.GetAccumulatedForce(), rb.rotation, rb.mass, deltaTime, forceMode);
+    }
+
+    public static Vector3 UnrotateTorques(Vector3 angSpeed, Vector3 torque, Quaternion inertiaTensorRot, Vector3 inertiaTensor, float deltaTime, AngForceMode forceMode)
+    {
+        Vector3 localAngSpeed = UnrotateVector(angSpeed, inertiaTensorRot);
+        Vector3 localTorque = UnrotateVector(torque, inertiaTensorRot);
+
+        return forceMode switch
+        {
+            AngForceMode.Torque => 
+                Vector3.Scale(localAngSpeed, inertiaTensor) / deltaTime + localTorque,
+            AngForceMode.Momentum => 
+                Vector3.Scale(localAngSpeed, inertiaTensor) + localTorque * deltaTime,
+            AngForceMode.RadAngSpeedAcceleration => 
+                localAngSpeed / deltaTime + Vector3.Scale(localTorque, inertiaTensor.PowMinus1()),
+            AngForceMode.RadAngSpeedChange => 
+                localAngSpeed + Vector3.Scale(localTorque, inertiaTensor.PowMinus1()) * deltaTime,
+            AngForceMode.DegAngSpeedAcceleration => 
+                localAngSpeed / deltaTime + Vector3.Scale(localTorque, inertiaTensor.PowMinus1()),
+            AngForceMode.DegAngSpeedChange => 
+                localAngSpeed + Vector3.Scale(localTorque, inertiaTensor.PowMinus1()) * deltaTime,
+            _ => Vector3.zero
+        };
+    }
+
+    public static Vector3 UnrotateTorques(Rigidbody rb, float deltaTime, AngForceMode forceMode)
+    {
+        return UnrotateTorques(rb.angularVelocity, rb.GetAccumulatedTorque(), rb.inertiaTensorRotation, rb.inertiaTensor, deltaTime, forceMode);
+    }
+    
+    public static Vector2 PowMinus1(this Vector2 v)
+    {
+        return new Vector2(1f / v.x, 1f / v.y);
+    }
+    
+    public static Vector3 PowMinus1(this Vector3 v)
+    {
+        return new Vector3(1f / v.x, 1f / v.y, 1f / v.z);
+    }
+    
+    public static Vector4 PowMinus1(this Vector4 v)
+    {
+        return new Vector4(1f / v.x, 1f / v.y, 1f / v.z, 1f / v.w);
     }
 
     public static float ExtractForce(Vector3 linearVelocity, Vector3 force, Quaternion rot, float mass, float deltaTime, ForceMode forceMode, PhysDirection direction)

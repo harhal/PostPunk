@@ -1,6 +1,6 @@
-using System;
 using UnityEngine;
 
-public class BycicleDriveWheel : BycicleWheelBase
+[RequireComponent(typeof(BycicleWheel))]
+public class BycicleDriveWheel : BycicleWheelProcessor
 {
 }

@@ -1,8 +1,8 @@
-using System;
 using Unity.Mathematics;
 using UnityEngine;
 
-public class BycicleInputGear : BycicleWheelBase
+[RequireComponent(typeof(BycicleWheel))]
+public class BycicleInputGear : BycicleWheelProcessor
 {
     public float BasicAngSpeed = 270.0f;
 

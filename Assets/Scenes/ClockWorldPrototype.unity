@@ -324,6 +324,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &221942503 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8055763947780472151, guid: 241de68dea4e77043ac9e089c29df172, type: 3}
+  m_PrefabInstance: {fileID: 936256700}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &305961325
 GameObject:
   m_ObjectHideFlags: 0
@@ -1538,7 +1543,7 @@ MonoBehaviour:
   leftPedalIndicator: {fileID: 796752510}
   rightPedalIndicator: {fileID: 1166460288}
   rotationIndicator: {fileID: 1294590256}
-  inputWheel: {fileID: 1987118415}
+  inputWheel: {fileID: 1255799636}
 --- !u!114 &1142060880
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1588,6 +1593,8 @@ GameObject:
   - component: {fileID: 1154095035}
   - component: {fileID: 1154095036}
   - component: {fileID: 1154095037}
+  - component: {fileID: 1154095038}
+  - component: {fileID: 1154095039}
   m_Layer: 0
   m_Name: DriveWheel
   m_TagString: Untagged
@@ -1627,18 +1634,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 139ebdb7a35b89c4ab378fcdce4d0c5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BycicleDriveWheel
-  wheelMesh: {fileID: 511470758}
-  virtualWheel:
-    Radius: 0.31
-    Mass: 1
-    Hollow: 1
-    DryFriction: 0.01
-    ViscousDamping: 0.005
-    BrakeFriction: 0
-    <AngSpeed>k__BackingField: 0
-    <Angle>k__BackingField: 0
   bBreakIsActive: 0
-  brakeTorque: 50
+  brakeTorque: 50000
   tireMaterial: {fileID: 11400000, guid: 632c441a27ee27d41aec4f705cc738a0, type: 2}
   groundMaterial: {fileID: 13400000, guid: 756be568e840dda4cb04fccabf7bcca6, type: 2}
 --- !u!136 &1154095037
@@ -1664,6 +1661,41 @@ CapsuleCollider:
   m_Height: 0.62
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1154095038
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1154095034}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96f24e1dd0d063a44a5d0c52ddc62574, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BycicleWheel
+  <virtualWheel>k__BackingField:
+    Radius: 0.31
+    Mass: 1
+    Hollow: 1
+    DryFriction: 0.02
+    ViscousDamping: 0.01
+    BrakeFriction: 0
+    <AngSpeed>k__BackingField: 0
+    <Angle>k__BackingField: 0
+--- !u!114 &1154095039
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1154095034}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18eaaa980dfa26247a3bd87c9a20b7bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BycicleWheelAvatar
+  wheel: {fileID: 1154095036}
+  avatar: {fileID: 511470758}
 --- !u!1 &1166460286
 GameObject:
   m_ObjectHideFlags: 0
@@ -1922,6 +1954,137 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FollowCamera
   target: {fileID: 1987118413}
+--- !u!1 &1255799633
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1255799634}
+  - component: {fileID: 1255799635}
+  - component: {fileID: 1255799636}
+  - component: {fileID: 1255799637}
+  - component: {fileID: 1255799638}
+  m_Layer: 0
+  m_Name: InputGear
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1255799634
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1255799633}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1987118413}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1255799635
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1255799633}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96f24e1dd0d063a44a5d0c52ddc62574, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BycicleWheel
+  <virtualWheel>k__BackingField:
+    Radius: 0.1
+    Mass: 0.5
+    Hollow: 0
+    DryFriction: 0.02
+    ViscousDamping: 0.01
+    BrakeFriction: 0
+    <AngSpeed>k__BackingField: 0
+    <Angle>k__BackingField: 0
+--- !u!114 &1255799636
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1255799633}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e715f005964ee845a92cf43f061da9a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BycicleInputWheel
+  bBreakIsActive: 0
+  brakeTorque: 500
+  tireMaterial: {fileID: 0}
+  groundMaterial: {fileID: 0}
+  BasicAngSpeed: 360
+  BaseTorque: 30
+  leftPedal:
+    lastInput: 0
+    impulseState: 0
+    angOffset: 90
+  rightPedal:
+    lastInput: 0
+    impulseState: 0
+    angOffset: 270
+  pushModeSetup:
+    MinEffectiveAng: 80
+    MaxEffectiveAng: 280
+  impulseModeSetup:
+    PerfectImpulseAng: 180
+    frameAngOffsets:
+    - 90
+    - 60
+    - 45
+    - 30
+    bonusImpulses:
+    - 1
+    - 1.1
+    - 1.25
+    - 1.4
+    - 1.5
+  impulseModeActivation: 0.8
+  inputMode: 0
+  timingBonus: 0
+--- !u!114 &1255799637
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1255799633}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: adbeb2c235329f2429c65507e5ce40f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BycicleTransmission
+  transmissionsRatio: 1.25
+  firstTransmissionRatio: 0.64
+  lastTransmission: 9
+  currentTransmission: 0
+--- !u!114 &1255799638
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1255799633}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18eaaa980dfa26247a3bd87c9a20b7bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BycicleWheelAvatar
+  wheel: {fileID: 1255799636}
+  avatar: {fileID: 221942503}
 --- !u!1 &1276161180
 GameObject:
   m_ObjectHideFlags: 0
@@ -2041,8 +2204,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BycicleSpeedDisplay
   engine: {fileID: 1987118416}
   driveWheel: {fileID: 1154095036}
-  transmission: {fileID: 1987118414}
-  inputWheel: {fileID: 1987118415}
+  transmission: {fileID: 1255799637}
+  inputWheel: {fileID: 1255799636}
   inputSpeedDisplay: {fileID: 907515493}
   velocityDisplay: {fileID: 503729911}
 --- !u!1 &1294590254
@@ -2123,11 +2286,6 @@ CanvasRenderer:
 --- !u!4 &1360373044 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6839596109332441078, guid: 241de68dea4e77043ac9e089c29df172, type: 3}
-  m_PrefabInstance: {fileID: 936256700}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &1364617128 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 400279709500183612, guid: 241de68dea4e77043ac9e089c29df172, type: 3}
   m_PrefabInstance: {fileID: 936256700}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1383509964
@@ -2369,7 +2527,7 @@ GameObject:
   - component: {fileID: 1789230060}
   - component: {fileID: 1789230061}
   m_Layer: 0
-  m_Name: BodyCollider
+  m_Name: Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2424,6 +2582,9 @@ GameObject:
   - component: {fileID: 1884599874}
   - component: {fileID: 1884599872}
   - component: {fileID: 1884599875}
+  - component: {fileID: 1884599876}
+  - component: {fileID: 1884599877}
+  - component: {fileID: 1884599878}
   m_Layer: 0
   m_Name: SteeringWheel
   m_TagString: Untagged
@@ -2443,22 +2604,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fd4aac3cb820704cbe1233fc3b841ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BycicleSteeringWheel
-  wheelMesh: {fileID: 1360373044}
-  virtualWheel:
-    Radius: 0.31
-    Mass: 1
-    Hollow: 1
-    DryFriction: 0.01
-    ViscousDamping: 0.005
-    BrakeFriction: 0
-    <AngSpeed>k__BackingField: 0
-    <Angle>k__BackingField: 0
   bBreakIsActive: 0
   brakeTorque: 50
   tireMaterial: {fileID: 11400000, guid: 632c441a27ee27d41aec4f705cc738a0, type: 2}
   groundMaterial: {fileID: 13400000, guid: 756be568e840dda4cb04fccabf7bcca6, type: 2}
   maxSteeringAngle: 30
-  steeringAngle: 0
+  <steeringAngle>k__BackingField: 0
   wheelsDist: 1
   steeringMesh: {fileID: 936256702}
 --- !u!4 &1884599874
@@ -2504,6 +2655,55 @@ CapsuleCollider:
   m_Height: 0.62
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1884599876
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1884599871}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96f24e1dd0d063a44a5d0c52ddc62574, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BycicleWheel
+  <virtualWheel>k__BackingField:
+    Radius: 0.31
+    Mass: 1
+    Hollow: 1
+    DryFriction: 0.02
+    ViscousDamping: 0.01
+    BrakeFriction: 0
+    <AngSpeed>k__BackingField: 0
+    <Angle>k__BackingField: 0
+--- !u!114 &1884599877
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1884599871}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18eaaa980dfa26247a3bd87c9a20b7bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BycicleWheelAvatar
+  wheel: {fileID: 1884599872}
+  avatar: {fileID: 1360373044}
+--- !u!114 &1884599878
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1884599871}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e433ca6f4324b24abe59fdb0b894f54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BycicleSteerHandlesAvatar
+  steeringWheel: {fileID: 1884599872}
+  avatar: {fileID: 936256702}
 --- !u!1 &1887734137
 GameObject:
   m_ObjectHideFlags: 0
@@ -2625,8 +2825,6 @@ GameObject:
   - component: {fileID: 1987118413}
   - component: {fileID: 1987118409}
   - component: {fileID: 1987118416}
-  - component: {fileID: 1987118415}
-  - component: {fileID: 1987118414}
   m_Layer: 0
   m_Name: CyclePostman
   m_TagString: Untagged
@@ -2659,7 +2857,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 64
+  m_Constraints: 96
   m_CollisionDetection: 2
 --- !u!4 &1987118413
 Transform:
@@ -2678,79 +2876,9 @@ Transform:
   - {fileID: 1154095035}
   - {fileID: 1884599874}
   - {fileID: 1789230060}
+  - {fileID: 1255799634}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1987118414
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1987118408}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: adbeb2c235329f2429c65507e5ce40f3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BycicleTransmission
-  transmissionsRatio: 1.25
-  firstTransmissionRatio: 1
-  lastTransmission: 7
-  currentTransmission: 0
---- !u!114 &1987118415
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1987118408}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5e715f005964ee845a92cf43f061da9a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BycicleInputWheel
-  wheelMesh: {fileID: 1364617128}
-  virtualWheel:
-    Radius: 0.2
-    Mass: 0.3
-    Hollow: 0
-    DryFriction: 0.01
-    ViscousDamping: 0.001
-    BrakeFriction: 0
-    <AngSpeed>k__BackingField: 0
-    <Angle>k__BackingField: 0
-  bBreakIsActive: 0
-  brakeTorque: 500
-  tireMaterial: {fileID: 0}
-  groundMaterial: {fileID: 0}
-  BasicAngSpeed: 360
-  BaseTorque: 30
-  leftPedal:
-    lastInput: 0
-    impulseState: 0
-    angOffset: 90
-  rightPedal:
-    lastInput: 0
-    impulseState: 0
-    angOffset: 270
-  pushModeSetup:
-    MinEffectiveAng: 80
-    MaxEffectiveAng: 280
-  impulseModeSetup:
-    PerfectImpulseAng: 180
-    frameAngOffsets:
-    - 90
-    - 60
-    - 45
-    - 30
-    bonusImpulses:
-    - 1
-    - 1.1
-    - 1.25
-    - 1.4
-    - 1.5
-  impulseModeActivation: 0.8
-  inputMode: 0
-  timingBonus: 0
 --- !u!114 &1987118416
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2765,11 +2893,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BycicleEngine
   rigidBody: {fileID: 1987118409}
   steeringWheel: {fileID: 1884599872}
-  inputGear: {fileID: 1987118415}
-  transmission: {fileID: 1987118414}
+  inputGear: {fileID: 1255799636}
+  transmission: {fileID: 1255799637}
   driveWheel: {fileID: 1154095036}
   savedJumpRequestInput: 0
-  jumpImpulse: 30
+  jumpImpulse: 300
   DisplayVelocity: {x: 0, y: 0, z: 0}
 --- !u!1 &2052593651
 GameObject:

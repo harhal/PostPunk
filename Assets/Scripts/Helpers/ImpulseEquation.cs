@@ -19,9 +19,9 @@ public class ImpulseEquation
         return Add(PhysHelper.UnrotateForces(body, Time.fixedDeltaTime, ForceMode.Impulse).z, body.mass, ratio);
     }
 
-    public ImpulseEquation Add(BycicleWheelBase wheel, float ratio = 1.0f)
+    public ImpulseEquation Add(BycicleWheelProcessor wheel, float ratio = 1.0f)
     {
-        return Add(wheel.virtualWheel, ratio);
+        return Add(wheel.LinearImpulse, wheel.LinearInertia, ratio);
     }
 
     public ImpulseEquation Add(VirtualWheel wheel, float ratio = 1.0f)
@@ -47,9 +47,9 @@ public class ImpulseEquation
         return Remove(impulse.HasValue ? impulse.Value : PhysHelper.UnrotateForces(body, Time.fixedDeltaTime, ForceMode.Impulse).z, body.mass, ratio);
     }
 
-    public ImpulseEquation Remove(BycicleWheelBase wheel, float? impulse = null, float ratio = 1.0f)
+    public ImpulseEquation Remove(BycicleWheelProcessor wheel, float? impulse = null, float ratio = 1.0f)
     {
-        return Remove(wheel.virtualWheel, impulse, ratio);
+        return Remove(impulse.HasValue ? impulse.Value : wheel.LinearImpulse, wheel.LinearInertia, ratio);
     }
 
     public ImpulseEquation Remove(VirtualWheel wheel, float? impulse = null, float ratio = 1.0f)
