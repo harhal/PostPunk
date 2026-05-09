@@ -114,7 +114,7 @@ public class BycicleEngine : MonoBehaviour
         bool driveWheelHasContact = driveWheelCollider.ContactPoints.Count > 0;
 
         var impulsesEquation = new ImpulseEquation()
-            .Add(inputGearWheel.LinearImpulse * driveWheel.Radius / inputGearWheel.Radius, inputGearWheel.LinearInertia, transmission.GetCurrentRatio())
+            .Add(inputGearWheel, transmission.GetCurrentRatio())
             .Add(driveWheel);
 
         if (driveWheelHasContact)
@@ -178,16 +178,19 @@ public class BycicleEngine : MonoBehaviour
 
     private float EqualizeInputGear(ImpulseEquation impulsesEquation)
     {
-        float gearsRadiusFactor = driveWheel.Radius / inputGearWheel.Radius;
-
         float inputGearMinImpulse = .0f;
-        float inputGearMaxImpulse = inputGearWheel.LinearImpulse * gearsRadiusFactor;
+        float inputGearMaxImpulse = inputGearWheel.LinearImpulse;
 
-        float inputGearFullImpulse = Mathf.Clamp(transmission.ReverseTransmitSpeed(impulsesEquation.CommonVelocity) * inputGearWheel.LinearInertia, inputGearMinImpulse, inputGearMaxImpulse);
+        float ratio = transmission.GetCurrentRatio();
+
+        float syncAngVelocityFactor = inputGearWheel.Radius / driveWheel.Radius;
+        
+        float fixedCommonVelocity = impulsesEquation.Clone().Remove(inputGearWheel, 0f, ratio).Add(0f, inputGearWheel.LinearInertia / syncAngVelocityFactor, ratio).CommonVelocity * syncAngVelocityFactor;
+        float inputGearFullImpulse = Mathf.Clamp(transmission.ReverseTransmitSpeed(fixedCommonVelocity) * inputGearWheel.LinearInertia, inputGearMinImpulse, inputGearMaxImpulse);
 
         impulsesEquation.Remove(inputGearWheel, inputGearFullImpulse, transmission.GetCurrentRatio());
 
-        return inputGearFullImpulse / gearsRadiusFactor - inputGearWheel.LinearImpulse;
+        return inputGearFullImpulse - inputGearWheel.LinearImpulse;
     }
 
     private float EqualizeDriveWheel(ImpulseEquation impulsesEquation)
