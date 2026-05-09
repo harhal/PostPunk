@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -19,7 +20,7 @@ public class ImpulseEquation
         return Add(PhysHelper.UnrotateForces(body, Time.fixedDeltaTime, ForceMode.Impulse).z, body.mass, ratio);
     }
 
-    public ImpulseEquation Add(BycicleWheelProcessor wheel, float ratio = 1.0f)
+    public ImpulseEquation Add(BycicleWheel wheel, float ratio = 1.0f)
     {
         return Add(wheel.LinearImpulse, wheel.LinearInertia, ratio);
     }
@@ -47,7 +48,7 @@ public class ImpulseEquation
         return Remove(impulse.HasValue ? impulse.Value : PhysHelper.UnrotateForces(body, Time.fixedDeltaTime, ForceMode.Impulse).z, body.mass, ratio);
     }
 
-    public ImpulseEquation Remove(BycicleWheelProcessor wheel, float? impulse = null, float ratio = 1.0f)
+    public ImpulseEquation Remove(BycicleWheel wheel, float? impulse = null, float ratio = 1.0f)
     {
         return Remove(impulse.HasValue ? impulse.Value : wheel.LinearImpulse, wheel.LinearInertia, ratio);
     }
@@ -73,6 +74,12 @@ public class ImpulseEquation
     public ImpulseEquation Clone()
     {
         return new ImpulseEquation().Add(commonImpulse, commonInertia);
+    }
+
+    public ImpulseEquation AddLoss(BycicleWheel wheel, float deltaTime, bool applyToCommonImpulse = false)
+    {
+        commonImpulse -= wheel.PredictLossImpulse(applyToCommonImpulse ? commonImpulse : wheel.LinearImpulse, deltaTime);
+        return this;
     }
 
     public float CommonVelocity => commonInertia != 0f ? commonImpulse / commonInertia : commonImpulse;

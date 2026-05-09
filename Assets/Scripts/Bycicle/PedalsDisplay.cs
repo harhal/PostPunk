@@ -13,13 +13,16 @@ public class ByciclePedalsDisplay : MonoBehaviour
     private Image rotationIndicator;
     
     [SerializeField]
-    private BycicleInputGear inputWheel;
+    private BycicleInputGear inputGear;
+    
+    [SerializeField]
+    private BycicleWheel inputWheel;
 
     // Update is called once per frame
     void Update()
     {
-        int leftPedalEfficiency = inputWheel.GetPedalEfficiency(PedalSide.Left);
-        int rightPedalEfficiency = inputWheel.GetPedalEfficiency(PedalSide.Right);
+        int leftPedalEfficiency = inputGear.GetPedalEfficiency(PedalSide.Left);
+        int rightPedalEfficiency = inputGear.GetPedalEfficiency(PedalSide.Right);
         leftPedalIndicator.gameObject.SetActive(leftPedalEfficiency >= 3);
         rightPedalIndicator.gameObject.SetActive(rightPedalEfficiency >= 3);
 
@@ -27,7 +30,7 @@ public class ByciclePedalsDisplay : MonoBehaviour
             leftPedalEfficiency >= 3 ? 0.5f : .0f, 
             rightPedalEfficiency >= 3 ? 0.5f : .0f);*/
         
-        rotationIndicator.rectTransform.localPosition = Quaternion.Euler(.0f, .0f, inputWheel._getRotatedAngle()) * Vector3.up * 100.0f;
+        rotationIndicator.rectTransform.localPosition = Quaternion.Euler(.0f, .0f, inputWheel.Angle) * Vector3.up * 100.0f;
     }
 
     void OnDestroy()

@@ -2,8 +2,10 @@ using Unity.Mathematics;
 using UnityEngine;
 
 [RequireComponent(typeof(BycicleWheel))]
-public class BycicleInputGear : BycicleWheelProcessor
+public class BycicleInputGear : MonoBehaviour
 {
+    protected BycicleWheel wheel;
+
     public float BasicAngSpeed = 270.0f;
 
     public float BaseTorque = 5.0f;
@@ -39,6 +41,12 @@ public class BycicleInputGear : BycicleWheelProcessor
     [SerializeField]
     private BonusType timingBonus;
 
+    void Awake()
+    {
+        wheel = GetComponent<BycicleWheel>();
+        enabled = wheel == null;
+    }
+
     public void SetPedalsInput(Vector2 input)
     {
         leftPedal.UpdateInput(input.x);
@@ -47,7 +55,7 @@ public class BycicleInputGear : BycicleWheelProcessor
 
     public void UpdateInputMode()
     {
-        if (AngSpeed < impulseModeActivation * BasicAngSpeed)
+        if (wheel.AngSpeed < impulseModeActivation * BasicAngSpeed)
         {
             inputMode = InputMode.Push;
         }
@@ -78,8 +86,8 @@ public class BycicleInputGear : BycicleWheelProcessor
         switch (inputMode)
         {
             case InputMode.Auto:
-                BonusType leftPedalBonus = leftPedal.ApplyImpulseBonus(virtualWheel.AngleDeg, impulseModeSetup);
-                BonusType rightPedalBonus = rightPedal.ApplyImpulseBonus(virtualWheel.AngleDeg, impulseModeSetup);
+                BonusType leftPedalBonus = leftPedal.ApplyImpulseBonus(wheel.Angle, impulseModeSetup);
+                BonusType rightPedalBonus = rightPedal.ApplyImpulseBonus(wheel.Angle, impulseModeSetup);
                 addTimingBonus(leftPedalBonus);
                 addTimingBonus(rightPedalBonus);
 
@@ -87,12 +95,12 @@ public class BycicleInputGear : BycicleWheelProcessor
                 break;
 
             case InputMode.Push:
-                float pedalsOutput = leftPedal.GetPushOutput(virtualWheel.AngleDeg, pushModeSetup) + rightPedal.GetPushOutput(virtualWheel.AngleDeg, pushModeSetup);
+                float pedalsOutput = leftPedal.GetPushOutput(wheel.Angle, pushModeSetup) + rightPedal.GetPushOutput(wheel.Angle, pushModeSetup);
                 inputTorque = BaseTorque * pedalsOutput;
                 break;
         }
         
-        virtualWheel.ApplyTorque(inputTorque, deltaTime, AngForceMode.Torque);
+        wheel.ApplyTorque(inputTorque, deltaTime, AngForceMode.Torque);
     }
 
     public int GetPedalEfficiency(PedalSide side)
@@ -100,7 +108,7 @@ public class BycicleInputGear : BycicleWheelProcessor
         Pedal pedal = getPedal(side);
         if (inputMode == InputMode.Push)
         {
-            float angle = pedal.GetPositionAng(virtualWheel.AngleDeg);
+            float angle = pedal.GetPositionAng(wheel.Angle);
             if (angle < pushModeSetup.MinEffectiveAng || angle >= pushModeSetup.MaxEffectiveAng)
             {
                 return 0; //Not Effective
@@ -109,7 +117,7 @@ public class BycicleInputGear : BycicleWheelProcessor
             return 4; //Not Effective
         }
 
-        switch (pedal.GetAngleBonus(virtualWheel.AngleDeg, impulseModeSetup))
+        switch (pedal.GetAngleBonus(wheel.Angle, impulseModeSetup))
         {
             case BonusType.Perfect: return 4;
             case BonusType.Excellent: return 3;
@@ -148,10 +156,5 @@ public class BycicleInputGear : BycicleWheelProcessor
         }
 
         timingBonus = (BonusType)math.clamp(intTimingBonus, (int)BonusType.Bad, (int)BonusType.Perfect);
-    }
-
-    public float _getRotatedAngle()
-    {
-        return virtualWheel.AngleDeg;
     }
 }

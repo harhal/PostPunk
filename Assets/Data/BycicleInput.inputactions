@@ -43,10 +43,10 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Brake",
+                    "name": "ControlModifier",
                     "type": "Value",
                     "id": "8bdd1262-5092-4e12-a942-9d0e1dacac42",
-                    "expectedControlType": "Double",
+                    "expectedControlType": "Axis",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
@@ -196,30 +196,8 @@
                 },
                 {
                     "name": "",
-                    "id": "d92a90e7-e3de-4a61-841b-8a8e276eeb51",
-                    "path": "<Keyboard>/space",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Brake",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "0916244b-3594-4776-bcba-d561dadbccbc",
-                    "path": "<Gamepad>/rightShoulder",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Brake",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "e26d7f78-0dfa-4909-acef-6886a84f4ad9",
-                    "path": "<Keyboard>/leftShift",
+                    "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -235,6 +213,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5e41b2b5-23c8-46bf-9f54-d1c1202f5443",
+                    "path": "<Keyboard>/shift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ControlModifier",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "127df2bd-6876-4b13-bd93-69a373c52c12",
+                    "path": "<Gamepad>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ControlModifier",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

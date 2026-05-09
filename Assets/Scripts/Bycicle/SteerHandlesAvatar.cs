@@ -3,18 +3,18 @@ using UnityEngine;
 public class BycicleSteerHandlesAvatar : MonoBehaviour
 {
     [SerializeField]
-    private BycicleSteeringWheel steeringWheel;
+    private SteeringHandles steeringHandles;
 
     [SerializeField]
     private Transform avatar;
 
     void Awake()
     {
-        enabled = steeringWheel != null && avatar != null;
+        enabled = steeringHandles != null && avatar != null;
     }
 
     void Update()
     {
-        avatar.SetLocalPositionAndRotation(avatar.localPosition, steeringWheel.GetLocalRotation());
+        avatar.SetLocalPositionAndRotation(avatar.localPosition, steeringHandles.GetLocalRotation());
     }
 }

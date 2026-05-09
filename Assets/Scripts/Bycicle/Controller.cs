@@ -2,14 +2,25 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class BycicleController : MonoBehaviour
-{   
+{
     [SerializeField]
-    private BycicleEngine bycicle;
+    private BycicleInputGear gear;
 
-    private float minPedalsInputDiff = .3f;
+    [SerializeField]
+    private SteeringHandles steeringHandles;
+
+    [SerializeField]
+    private BycicleBrake frontBrake;
+
+    [SerializeField]
+    private BycicleBrake driveBrake;
+
+    [SerializeField]
+    private BycicleJumpSpring jumpSpring;
 
     private Vector2 pedalsInput;
 
+    private bool controlModifier = false;
 
     private void OnLeftPedal(InputValue input)
     {
@@ -25,13 +36,23 @@ public class BycicleController : MonoBehaviour
 
     private void validateAndSendPedalsInput()
     {
-        if (Mathf.Abs(pedalsInput.x - pedalsInput.y) > minPedalsInputDiff)
+        if (controlModifier)
         {
-            bycicle.SetPedalsInput(pedalsInput);
+            frontBrake.SetBrakeInput(pedalsInput.x);
+            driveBrake.SetBrakeInput(pedalsInput.y);
+            return;
+        }
+
+        frontBrake.SetBrakeInput(0f);
+        driveBrake.SetBrakeInput(0f);
+
+        if (pedalsInput.x > pedalsInput.y)
+        {
+            gear.SetPedalsInput(new Vector2(pedalsInput.x, 0f));
         }
         else
         {
-            bycicle.SetPedalsInput(Vector2.zero);
+            gear.SetPedalsInput(new Vector2(0f, pedalsInput.y));
         }
     }
 
@@ -41,17 +62,17 @@ public class BycicleController : MonoBehaviour
 
     private void OnTurnRight(InputValue input)
     {
-        bycicle.SetSteeringInput(input.Get<float>());
+            steeringHandles.SetSteeringInput(input.Get<float>());
     }
 
-    private void OnBrake(InputValue input)
+    private void OnControlModifier(InputValue input)
     {
-        bycicle.SetBrakeInput(input.Get<float>() > .5f);
+        controlModifier = input.Get<float>() > .5f;
     }
 
     private void OnJump(InputValue input)
     {
-        bycicle.RequestJump();
+        jumpSpring.RequestJump();
     }
 
     void Update()

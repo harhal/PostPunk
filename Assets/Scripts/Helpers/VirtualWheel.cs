@@ -115,6 +115,11 @@ public class VirtualWheel
 
     public float GetLossTorque(float deltaTime)
     {
-        return Mathf.Min(DryFriction + BrakeFriction, Mathf.Abs(AngSpeed * Inertia / deltaTime)) * Math.Sign(AngSpeed) + ViscousDamping * AngSpeed;
+        return Mathf.Min(DryFriction + BrakeFriction + ViscousDamping * Mathf.Abs(AngSpeed), Mathf.Abs(AngSpeed * Inertia / deltaTime)) * Math.Sign(AngSpeed);
+    }
+
+    public float PredictLossImpulse(float impulse, float deltaTime)
+    {
+        return Mathf.Min((DryFriction + BrakeFriction) * deltaTime / Radius + ViscousDamping * Mathf.Abs(impulse), Mathf.Abs(impulse)) * Math.Sign(impulse);
     }
 }

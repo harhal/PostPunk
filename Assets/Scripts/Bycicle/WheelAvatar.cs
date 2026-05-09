@@ -3,7 +3,7 @@ using UnityEngine;
 public class BycicleWheelAvatar : MonoBehaviour
 {
     [SerializeField]
-    private BycicleWheelProcessor wheel;
+    private BycicleWheel wheel;
 
     [SerializeField]
     private Transform avatar;

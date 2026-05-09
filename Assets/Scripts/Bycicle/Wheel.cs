@@ -6,28 +6,12 @@ public class BycicleWheel : MonoBehaviour
 {
     [field: SerializeField]
     public VirtualWheel virtualWheel {get; protected set;}
-}
-
-[Serializable]
-[RequireComponent(typeof(BycicleWheel))]
-public class BycicleWheelProcessor : MonoBehaviour
-{
-    [SerializeField]
-    protected bool bBreakIsActive = false;
 
     [SerializeField]
-    protected float brakeTorque = 50.0f;
+    public BycicleTireMaterial_Base tireMaterial;
 
     [SerializeField]
-    protected BycicleTireMaterial_Base tireMaterial;
-
-
-    [SerializeField]
-    protected PhysicsMaterial groundMaterial;
-
-    protected BycicleWheel wheel;
-
-    protected VirtualWheel virtualWheel => wheel.virtualWheel;
+    public PhysicsMaterial groundMaterial;
 
     public float DisplayAngSpeed => virtualWheel.DisplayAngSpeed;
 
@@ -43,23 +27,6 @@ public class BycicleWheelProcessor : MonoBehaviour
     public float Angle => virtualWheel.AngleDeg;
 
     public float Radius => virtualWheel.Radius;
-
-    void Awake()
-    {
-        wheel = GetComponent<BycicleWheel>();
-        enabled = wheel == null;
-    }
-
-    public void SetBrakeActive(bool bActive)
-    {
-        virtualWheel.SetBrakeFriction(bBreakIsActive ? brakeTorque : .0f);
-        bBreakIsActive = bActive;
-    }
-
-    public bool IsBrakeActive()
-    {
-        return bBreakIsActive;
-    }
 
     public void ApplyForce(float force, float deltaTime, ForceMode forceMode, float lever = 1.0f, float sin = 1.0f)
     {
@@ -86,11 +53,6 @@ public class BycicleWheelProcessor : MonoBehaviour
         return true;//wheelCollider.isGrounded;
     }
 
-    public virtual Quaternion GetLocalRotation()
-    {
-        return Quaternion.identity;
-    }
-
     public BycicleTireMaterial_Base GetTireMaterial()
     {
         return tireMaterial;
@@ -99,5 +61,10 @@ public class BycicleWheelProcessor : MonoBehaviour
     public PhysicsMaterial GetGroundMaterial()
     {
         return groundMaterial;
+    }
+
+    public float PredictLossImpulse(float impulse, float deltaTime)
+    {
+        return virtualWheel.PredictLossImpulse(impulse, deltaTime);
     }
 }

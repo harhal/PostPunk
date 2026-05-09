@@ -86,6 +86,11 @@ public class BycicleTransmission : MonoBehaviour
         return currentTransmission >= lastTransmission;
     }
 
+    public float TransmissionInverseLerp()
+    {
+        return Mathf.InverseLerp(0, lastTransmission, currentTransmission);
+    }
+
     public int GetCurrentTransmission()
     {
         return currentTransmission;

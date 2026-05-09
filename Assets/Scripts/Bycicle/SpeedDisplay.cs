@@ -9,13 +9,10 @@ public class BycicleSpeedDisplay : MonoBehaviour
     public BycicleEngine engine;
 
     [SerializeField]
-    public BycicleDriveWheel driveWheel;
-
-    [SerializeField]
     public BycicleTransmission transmission;
 
     [SerializeField]
-    public BycicleInputGear inputWheel;
+    public BycicleWheel inputWheel;
 
     [SerializeField]
     public TextMeshProUGUI inputSpeedDisplay;
@@ -33,7 +30,6 @@ public class BycicleSpeedDisplay : MonoBehaviour
     void Update()
     {
         velocityDisplay.SetText(String.Format("{0:F2} T{1} x{2:F2}", engine.DisplayVelocity.z / 1000f * 3600f, transmission.GetCurrentTransmission(), transmission.GetCurrentRatio()));
-        inputSpeedDisplay.SetText(String.Format("{0:F2} -> {1:F2} -> {2:F2} -> {3:F2} -> {4:F2}", inputWheel.DisplayAngSpeed, transmission.GetCurrentRatio() * inputWheel.DisplayAngSpeed, 
-            driveWheel.DisplayAngSpeed, driveWheel.DisplayAngSpeed * Mathf.Deg2Rad * driveWheel.Radius / 1000f * 3600f, engine.DisplayVelocity.z / 1000f * 3600f));
+        inputSpeedDisplay.SetText(String.Format("{0:F2}", inputWheel.DisplayAngSpeed));
     }
 }

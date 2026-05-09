@@ -32,14 +32,14 @@ class PedalImpulseModeSetup
         90.0f,  // Ok
         60.0f,  // Good
         45.0f,  // Excellent
-        30.0f    // Perfect
+        30.0f   // Perfect
     };
     
     [SerializeField]
     private float[] bonusImpulses = new float[(int)BonusType.Perfect] 
     {
         1.10f,   // Bad
-        1.25f,  // Ok
+        1.25f,   // Ok
         1.40f,   // Good
         1.55f,   // Excellent
         1.70f    // Perfect
