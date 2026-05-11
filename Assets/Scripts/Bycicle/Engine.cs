@@ -28,6 +28,12 @@ public class BycicleEngine : MonoBehaviour
     
     [SerializeField]    
     private BycicleWheelCollider steeringWheelCollider;
+    
+    [SerializeField]
+    private BycicleBrake driveWheelBrake;
+    
+    [SerializeField]    
+    private BycicleBrake steeringWheelBrake;
 
     [SerializeField]    
     private BycicleJumpSpring jumpSpring;
@@ -95,7 +101,10 @@ public class BycicleEngine : MonoBehaviour
 
         inputGear.UpdateInputMode();
 
-        inputGear.ApplyInputTorque(Time.fixedDeltaTime);
+        if (!driveWheelBrake.IsBrakeActive(.1f) && !steeringWheelBrake.IsBrakeActive(.1f))
+        {
+            inputGear.ApplyInputTorque(Time.fixedDeltaTime);
+        }
         inputGearWheel.ApplyLossTorque(Time.fixedDeltaTime);
 
         EqualizeSystemImpulses(out float inputGearImpulse, out float driveImpulse, out float steeringImpulse, out float vehicleDriveImpulse, out float vehicleSteeringImpulse);
@@ -141,6 +150,11 @@ public class BycicleEngine : MonoBehaviour
         driveWheel.ApplyLossTorque(Time.fixedDeltaTime);
         steeringWheel.ApplyLossTorque(Time.fixedDeltaTime);
 
+        if (inputGearWheel.AngSpeed > inputGear.MaxAngSpeed)
+        {
+            inputGearWheel.ApplyTorque(Mathf.Min(0f, inputGear.MaxAngSpeed - inputGearWheel.AngSpeed), Time.fixedDeltaTime, AngForceMode.DegAngSpeedChange);
+        }
+
         driveWheel.Step(Time.fixedDeltaTime);
         steeringWheel.Step(Time.fixedDeltaTime);
         inputGearWheel.Step(Time.fixedDeltaTime);
@@ -164,8 +178,6 @@ public class BycicleEngine : MonoBehaviour
                 impulsesEquation.Add(steeringWheel);
             }
         }
-
-        Debug.LogFormat("Total impulse is {0:F2} per {1:F2} = {2:F2}", impulsesEquation.CommonImpulse, Time.time,  impulsesEquation.CommonImpulse / Time.time);
 
         inputGearImpulse = EqualizeInputGear(impulsesEquation);
 

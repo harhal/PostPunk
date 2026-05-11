@@ -6,8 +6,13 @@ public class BycicleInputGear : MonoBehaviour
 {
     protected BycicleWheel wheel;
 
+    [SerializeField]
     public float BasicAngSpeed = 270.0f;
 
+    [SerializeField]
+    public float MaxAngSpeed = 720f;
+
+    [SerializeField]
     public float BaseTorque = 5.0f;
     
 // Pedals

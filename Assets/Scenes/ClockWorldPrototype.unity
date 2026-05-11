@@ -5683,6 +5683,8 @@ MonoBehaviour:
   steeringWheel: {fileID: 1884599876}
   driveWheelCollider: {fileID: 1154095041}
   steeringWheelCollider: {fileID: 1884599880}
+  driveWheelBrake: {fileID: 1154095040}
+  steeringWheelBrake: {fileID: 1884599879}
   jumpSpring: {fileID: 1789230062}
   wheelsDist: 1
   DisplayVelocity: {x: 0, y: 0, z: 0}
