@@ -13,16 +13,16 @@ public class FollowCamera : MonoBehaviour
     private Camera cam;
 
     [SerializeField]
-    private Vector3 cameraLocalPosition = Vector3.zero;
+    private Vector3 cameraOffset = Vector3.zero;
 
     [SerializeField]
-    private Vector3 focusOffset = Vector3.zero;
+    private Vector3 focusAOffset = Vector3.zero;
 
     [SerializeField]
-    private Vector3 additionalTargetOffset = Vector3.zero;
+    private Vector3 focusBOffset = Vector3.zero;
 
     [SerializeField]
-    private float locusDistance = 100f;
+    private Vector3 focusCOffset = Vector3.zero;
 
     [SerializeField]
     private float snapAngle = 1f;
@@ -30,11 +30,8 @@ public class FollowCamera : MonoBehaviour
     [SerializeField]
     private float baseAngSpeed = 90f;
 
-    //private Matrix4x4 transformOffset;
-
     void Awake()
     {
-        //transformOffset = target.transform.worldToLocalMatrix * transform.localToWorldMatrix;
     }
 
     void Update()
@@ -56,16 +53,16 @@ public class FollowCamera : MonoBehaviour
 
     Matrix4x4 getPerfectTransform()
     {
-        Vector3 locusLocalPos = target.transform.forward * locusDistance;
-        Vector3 camDirection = (locusLocalPos - focusOffset).normalized;
-        Vector3 additionalTargetDir = additionalTargetOffset - locusLocalPos;
+        Vector3 focusCLocalPos = target.rotation * focusCOffset;
+        Vector3 camDirection = (focusCLocalPos - focusAOffset).normalized;
+        Vector3 additionalTargetDir = target.rotation * focusBOffset - focusCLocalPos;
 
         float h = Vector3.Cross(-camDirection, additionalTargetDir).magnitude;
-        Vector3 camLocalPos = locusLocalPos + Vector3.Project(additionalTargetDir, -camDirection) - camDirection * (h / Mathf.Tan(cam.fieldOfView * .5f * Mathf.Deg2Rad));
+        Vector3 camLocalPos = focusCLocalPos + Vector3.Project(additionalTargetDir, -camDirection) - camDirection * (h / Mathf.Tan(cam.fieldOfView * .5f * Mathf.Deg2Rad));
 
-        Quaternion camWorldRotation = Quaternion.LookRotation(locusLocalPos - camLocalPos, Vector3.up);
+        Quaternion camWorldRotation = Quaternion.LookRotation(focusCLocalPos - camLocalPos, Vector3.up);
 
-        Vector3 camWorldPos = target.position + camLocalPos + camWorldRotation * cameraLocalPosition;
+        Vector3 camWorldPos = target.position + camLocalPos + camWorldRotation * cameraOffset;
 
 
         return Matrix4x4.Translate(camWorldPos) * Matrix4x4.Rotate(camWorldRotation);
@@ -76,13 +73,16 @@ public class FollowCamera : MonoBehaviour
         transform.position = getPerfectTransform().GetPosition();
         transform.rotation = getPerfectTransform().rotation;
 
-        UnityEditor.Handles.color = Color.blue;        
-        UnityEditor.Handles.DrawLine(cam.transform.position, target.position + focusOffset);
+        UnityEditor.Handles.color = Color.blue;
+        UnityEditor.Handles.DrawLine(cam.transform.position, target.position + focusAOffset);
+        UnityEditor.Handles.Label(target.position + focusAOffset, "A");
 
         UnityEditor.Handles.color = Color.navajoWhite;        
-        UnityEditor.Handles.DrawWireCube(target.position + additionalTargetOffset, Vector3.one * .05f);
+        UnityEditor.Handles.DrawWireCube(target.position + focusBOffset, Vector3.one * .05f);
+        UnityEditor.Handles.Label(target.position + focusBOffset, "B");
 
         UnityEditor.Handles.color = Color.green;        
-        UnityEditor.Handles.DrawWireCube(target.position + target.transform.forward * locusDistance, Vector3.one * .05f);
+        UnityEditor.Handles.DrawWireCube(target.position + target.rotation * focusCOffset, Vector3.one * .05f);
+        UnityEditor.Handles.Label(target.position + target.rotation * focusCOffset, "C");
     }
 }

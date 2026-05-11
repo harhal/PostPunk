@@ -4402,8 +4402,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1237135773}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.034438595, y: 0, z: 0, w: 0.9994068}
-  m_LocalPosition: {x: 36.829, y: 1.0746495, z: -159.01524}
+  m_LocalRotation: {x: 0.064592466, y: 0, z: 0, w: 0.99791175}
+  m_LocalPosition: {x: 36.829, y: 1.1548442, z: -158.91835}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4425,10 +4425,10 @@ MonoBehaviour:
   target: {fileID: 1987118409}
   transmission: {fileID: 1255799637}
   cam: {fileID: 1237135775}
-  cameraLocalPosition: {x: 0.5, y: 0, z: 0}
-  focusOffset: {x: 0, y: 0.69, z: 0}
-  additionalTargetOffset: {x: 0, y: -0.13, z: 0}
-  locusDistance: 10
+  cameraOffset: {x: 0.5, y: 0, z: 0}
+  focusAOffset: {x: 0, y: 0.7, z: 0}
+  focusBOffset: {x: 0, y: -0.1, z: 0}
+  focusCOffset: {x: 0, y: -0.6, z: 10}
   snapAngle: 1
   baseAngSpeed: 90
 --- !u!1 &1255799633
