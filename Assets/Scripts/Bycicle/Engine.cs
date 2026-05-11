@@ -41,6 +41,11 @@ public class BycicleEngine : MonoBehaviour
 
     public Vector3 DisplayVelocity;
 
+    void Awake()
+    {
+        PrintPerfectInputImpulse();
+    }
+
     private void updateState()
     {
         DisplayVelocity = PhysHelper.UnrotateVector(rigidBody.linearVelocity, rigidBody.rotation);
@@ -48,6 +53,37 @@ public class BycicleEngine : MonoBehaviour
         DisplayVelocity = PhysHelper.UnrotateVector(rigidBody.linearVelocity, rigidBody.rotation);
         driveWheelCollider.UpdateContactPoints();
         steeringWheelCollider.UpdateContactPoints();
+    }
+
+    private void PrintPerfectInputImpulse()
+    {
+        float firstTransmissionRatio = .64f;
+        float transmissionsRatio = 1.25f;
+
+        for (int idx = 0; idx < 10; idx++)
+        {
+            float ratio = firstTransmissionRatio * Mathf.Pow(transmissionsRatio, idx);
+
+            float angInputVelocity = 360f * Mathf.Deg2Rad;
+            float driveLinearVelocity = angInputVelocity * ratio * driveWheel.Radius;
+
+            ImpulseEquation impulsesEquation = new ImpulseEquation()
+                .Add(angInputVelocity * inputGearWheel.Radius * inputGearWheel.LinearInertia, inputGearWheel.LinearInertia, ratio)
+                .Add(driveLinearVelocity * driveWheel.LinearInertia, driveWheel.LinearInertia)
+                .Add(driveLinearVelocity * rigidBody.mass, rigidBody.mass)
+                .Add(driveLinearVelocity * steeringWheel.LinearInertia, steeringWheel.LinearInertia);
+
+            float InputImpulse = impulsesEquation.CommonImpulse * ratio;
+        
+            ImpulseEquation impulsesEquation1 = new ImpulseEquation()
+                .Add(InputImpulse, inputGearWheel.LinearInertia, ratio)
+                .Add(0f, driveWheel.LinearInertia)
+                .Add(0f, rigidBody.mass)
+                .Add(0f, steeringWheel.LinearInertia);
+
+            Debug.LogFormat("{0}x{1:F2}({2:F2}): {3:F2}/{4:F2} = {5:F2};\nInput momentum = {6:F2}; {7:F2}", idx, ratio, driveLinearVelocity, impulsesEquation.CommonImpulse, impulsesEquation.CommonInertia, impulsesEquation.CommonVelocity,
+                InputImpulse * inputGearWheel.Radius, impulsesEquation1.CommonImpulse);
+        }
     }
 
     void FixedUpdate()
@@ -100,6 +136,8 @@ public class BycicleEngine : MonoBehaviour
             rigidBody.AddForce(jumpSpring.ApplyJumpImpulse(), ForceMode.Impulse);
         }
 
+        Debug.Log(inputGearWheel.AngSpeed);
+
         driveWheel.ApplyLossTorque(Time.fixedDeltaTime);
         steeringWheel.ApplyLossTorque(Time.fixedDeltaTime);
 
@@ -126,6 +164,8 @@ public class BycicleEngine : MonoBehaviour
                 impulsesEquation.Add(steeringWheel);
             }
         }
+
+        Debug.LogFormat("Total impulse is {0:F2} per {1:F2} = {2:F2}", impulsesEquation.CommonImpulse, Time.time,  impulsesEquation.CommonImpulse / Time.time);
 
         inputGearImpulse = EqualizeInputGear(impulsesEquation);
 
@@ -185,10 +225,10 @@ public class BycicleEngine : MonoBehaviour
 
         float syncAngVelocityFactor = inputGearWheel.Radius / driveWheel.Radius;
         
-        float fixedCommonVelocity = impulsesEquation.Clone().Remove(inputGearWheel, 0f, ratio).Add(0f, inputGearWheel.LinearInertia / syncAngVelocityFactor, ratio).CommonVelocity * syncAngVelocityFactor;
+        float fixedCommonVelocity = impulsesEquation.Clone().Remove(inputGearWheel, 0f, ratio).Add(0f, inputGearWheel.LinearInertia * syncAngVelocityFactor, ratio).CommonVelocity * syncAngVelocityFactor;
         float inputGearFullImpulse = Mathf.Clamp(transmission.ReverseTransmitSpeed(fixedCommonVelocity) * inputGearWheel.LinearInertia, inputGearMinImpulse, inputGearMaxImpulse);
 
-        impulsesEquation.Remove(inputGearWheel, inputGearFullImpulse, transmission.GetCurrentRatio());
+        impulsesEquation.Remove(inputGearWheel, inputGearFullImpulse, ratio);
 
         return inputGearFullImpulse - inputGearWheel.LinearImpulse;
     }
