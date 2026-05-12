@@ -42,8 +42,9 @@ public class BycicleWheelCollider : MonoBehaviour
         float segmentAngle = (endAngle - startAngle) / segmentsCount;
         float halfSegmentAngle = segmentAngle * .5f;
         float distance = radius - width;
-        float chordaLength = segmentAngle * Mathf.Deg2Rad * distance + width * 2f;
-        Vector3 locOffset = Vector3.up * Mathf.Cos(halfSegmentAngle * Mathf.Deg2Rad - width) * distance;
+        float chordaLength = (Mathf.Sin(halfSegmentAngle * Mathf.Deg2Rad) * distance + width) * 2f;
+        float chordaDist = Mathf.Cos(halfSegmentAngle * Mathf.Deg2Rad) * distance;
+        Vector3 locOffset = Vector3.up * chordaDist;
 
         for (int idx = 0; idx < segmentsCount; idx++)
         {
@@ -63,7 +64,7 @@ public class BycicleWheelCollider : MonoBehaviour
             CapsuleCollider radiusCollider = new GameObject(gameObject.name + "_" + idx, typeof(CapsuleCollider)).GetComponent<CapsuleCollider>();
             radiusCollider.transform.parent = transform;
             radiusCollider.radius = width;
-            radiusCollider.height = chordaLength;
+            radiusCollider.height = chordaDist;
             radiusCollider.transform.SetLocalPositionAndRotation(chordaRotation * locOffset * .5f, chordaRotation);
             radiusCollider.material = material;
             radiusCollider.providesContacts = true;
@@ -114,7 +115,6 @@ public class BycicleWheelCollider : MonoBehaviour
 
         Matrix4x4 mx = transform.localToWorldMatrix;
 
-        UnityEditor.Handles.color = Color.red;
         for (int idx = 0; idx < segmentsCount; idx++)
         {
             float localAngle = segmentAngle * idx + startAngle;

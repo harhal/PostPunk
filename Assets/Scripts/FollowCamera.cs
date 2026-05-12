@@ -28,6 +28,12 @@ public class FollowCamera : MonoBehaviour
     private float snapAngle = 1f;
 
     [SerializeField]
+    private float baseFov = 60f;
+
+    [SerializeField]
+    private float fastFov = 30f;
+
+    [SerializeField]
     private float baseAngSpeed = 90f;
 
     void Awake()
@@ -36,19 +42,26 @@ public class FollowCamera : MonoBehaviour
 
     void Update()
     {
-        cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, Mathf.Lerp(60f, 90f, transmission.TransmissionInverseLerp()), Time.deltaTime);
+        if (transmission != null)
+        {
+            cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, Mathf.Lerp(baseFov, fastFov, transmission.TransmissionInverseLerp()), Time.deltaTime);
+        }
+        else
+        {
+            cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, 60f, Time.deltaTime);
+        }
 
         Vector3 perfectPosition = getPerfectTransform().GetPosition();
         Vector3 newPosition = perfectPosition;
 
         Quaternion lookAtFocusRotation = getPerfectTransform().rotation;
-        float deltaAngle = Quaternion.Angle(transform.rotation, lookAtFocusRotation);
+        float deltaAngle = Quaternion.Angle(cam.transform.rotation, lookAtFocusRotation);
         float angSpeed = MathF.Sqrt(deltaAngle / baseAngSpeed) * baseAngSpeed;
         Quaternion newRotation = deltaAngle < snapAngle 
             ? lookAtFocusRotation 
-            : Quaternion.Lerp(transform.rotation, lookAtFocusRotation, deltaAngle / (angSpeed * Time.deltaTime));
+            : Quaternion.Lerp(cam.transform.rotation, lookAtFocusRotation, deltaAngle / (angSpeed * Time.deltaTime));
         
-        transform.SetPositionAndRotation(newPosition, newRotation);
+        cam.transform.SetPositionAndRotation(newPosition, newRotation);
     }
 
     Matrix4x4 getPerfectTransform()
@@ -70,8 +83,13 @@ public class FollowCamera : MonoBehaviour
 
     void OnDrawGizmosSelected()
     {
-        transform.position = getPerfectTransform().GetPosition();
-        transform.rotation = getPerfectTransform().rotation;
+        if (target == null || !target.gameObject.activeSelf)
+        {
+            return;
+        }
+        
+        cam.transform.position = getPerfectTransform().GetPosition();
+        cam.transform.rotation = getPerfectTransform().rotation;
 
         UnityEditor.Handles.color = Color.blue;
         UnityEditor.Handles.DrawLine(cam.transform.position, target.position + focusAOffset);

@@ -18,24 +18,42 @@ public class BycicleController : MonoBehaviour
     [SerializeField]
     private BycicleJumpSpring jumpSpring;
 
+    [SerializeField]
+    private CharacterModeSwitcher characterSwitcher;
+
     private Vector2 pedalsInput;
 
     private bool controlModifier = false;
 
     private void OnLeftPedal(InputValue input)
     {
+        if (!enabled)
+        {
+            return;
+        }
+
         pedalsInput.x = input.Get<float>();
         validateAndSendPedalsInput();
     }
 
     private void OnRightPedal(InputValue input)
     {
+        if (!enabled)
+        {
+            return;
+        }
+        
         pedalsInput.y = input.Get<float>();
         validateAndSendPedalsInput();
     }
 
     private void validateAndSendPedalsInput()
     {
+        if (!enabled)
+        {
+            return;
+        }
+        
         if (controlModifier)
         {
             frontBrake.SetBrakeInput(pedalsInput.x);
@@ -58,21 +76,54 @@ public class BycicleController : MonoBehaviour
 
     private void OnWeightForward(InputValue input)
     {
+        if (!enabled)
+        {
+            return;
+        }
+        
     }
 
     private void OnTurnRight(InputValue input)
     {
-            steeringHandles.SetSteeringInput(input.Get<float>());
+        if (!enabled)
+        {
+            return;
+        }
+        
+        steeringHandles.SetSteeringInput(input.Get<float>());
     }
 
     private void OnControlModifier(InputValue input)
     {
+        if (!enabled)
+        {
+            return;
+        }
+        
         controlModifier = input.Get<float>() > .5f;
     }
 
     private void OnJump(InputValue input)
     {
+        if (!enabled)
+        {
+            return;
+        }
+        
         jumpSpring.RequestJump();
+    }
+
+    void OnDismissBycicle(InputValue input)
+    {
+        if (!enabled)
+        {
+            return;
+        }
+
+        if (input.Get<float>() > .5f)
+        {
+            characterSwitcher.SetCharacterMode(CharacterMode.Courier);
+        }
     }
 
     void Update()
