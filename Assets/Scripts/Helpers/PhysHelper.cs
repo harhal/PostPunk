@@ -40,9 +40,9 @@ public static class PhysHelper
         };
     }
 
-    public static Vector3 UnrotateForces(Rigidbody rb, float deltaTime, ForceMode forceMode)
+    public static Vector3 UnrotateForces(Rigidbody rb, Vector3 anchorVelocity, float deltaTime, ForceMode forceMode)
     {
-        return UnrotateForces(rb.linearVelocity, rb.GetAccumulatedForce(), rb.rotation, rb.mass, deltaTime, forceMode);
+        return UnrotateForces(rb.linearVelocity - anchorVelocity, rb.GetAccumulatedForce(), rb.rotation, rb.mass, deltaTime, forceMode);
     }
 
     public static Vector3 UnrotateTorques(Vector3 angSpeed, Vector3 torque, Quaternion inertiaTensorRot, Vector3 inertiaTensor, float deltaTime, AngForceMode forceMode)
@@ -100,9 +100,9 @@ public static class PhysHelper
         };
     }
 
-    public static float ExtractForce(Rigidbody rb, float deltaTime, ForceMode forceMode, PhysDirection direction)
+    public static float ExtractForce(Rigidbody rb, Vector3 anchorVelocity, float deltaTime, ForceMode forceMode, PhysDirection direction)
     {
-        return ExtractForce(rb.linearVelocity, rb.GetAccumulatedForce(), rb.rotation, rb.mass, deltaTime, forceMode, direction);
+        return ExtractForce(rb.linearVelocity - anchorVelocity, rb.GetAccumulatedForce(), rb.rotation, rb.mass, deltaTime, forceMode, direction);
     }
 
     public static Vector3 ExtractForcesPlane(Vector3 linearVelocity, Vector3 force, Quaternion rot, float mass, float deltaTime, ForceMode forceMode, PhysPlane plane)

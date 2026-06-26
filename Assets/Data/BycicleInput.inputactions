@@ -16,6 +16,15 @@
                     "initialStateCheck": true
                 },
                 {
+                    "name": "LookAround",
+                    "type": "Value",
+                    "id": "cd2f59f1-71f3-4ce4-a6fd-c54271528bf8",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
                     "name": "DismissBycicle",
                     "type": "Button",
                     "id": "61a4cffa-9178-4882-a39f-46678467e43d",
@@ -90,6 +99,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "LeftPedal",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6f6ca6c8-26e3-49b2-9645-4f0cd25903e9",
+                    "path": "<Mouse>/delta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "LookAround",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2ba8a0e3-ca72-4dab-a960-f06d004dc48e",
+                    "path": "<Gamepad>/rightStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "LookAround",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -383,6 +414,17 @@
                     "name": "",
                     "id": "3bd5e0db-602a-4f74-b24c-702af9d6fdff",
                     "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "LookAround",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e0ac413d-2bc1-4144-988a-63ae346f51a2",
+                    "path": "<Gamepad>/rightStick",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

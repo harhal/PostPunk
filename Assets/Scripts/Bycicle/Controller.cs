@@ -21,6 +21,9 @@ public class BycicleController : MonoBehaviour
     [SerializeField]
     private CharacterModeSwitcher characterSwitcher;
 
+    [SerializeField]
+    private FollowCamera followCamera;
+
     private Vector2 pedalsInput;
 
     private bool controlModifier = false;
@@ -124,6 +127,16 @@ public class BycicleController : MonoBehaviour
         {
             characterSwitcher.SetCharacterMode(CharacterMode.Courier);
         }
+    }
+
+    void OnLookAround(InputValue input)
+    {        
+        if (!enabled)
+        {
+            return;
+        }
+
+        followCamera.ApplyLookAroundInput(input.Get<Vector2>());
     }
 
     void Update()

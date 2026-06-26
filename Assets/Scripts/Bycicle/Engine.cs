@@ -41,7 +41,7 @@ public class BycicleEngine : MonoBehaviour
     [SerializeField]
     private float wheelsDist = 1.0f;
 
-    public float DownImpulse => -PhysHelper.ExtractForce(rigidBody, Time.fixedDeltaTime, ForceMode.Impulse, PhysDirection.Up) + PhysHelper.UnrotateVector(Physics.gravity * rigidBody.mass / Time.fixedDeltaTime, rigidBody.rotation).y;
+    public float DownImpulse => -PhysHelper.ExtractForce(rigidBody, getAverageGroundVelocity(Time.fixedDeltaTime), Time.fixedDeltaTime, ForceMode.Impulse, PhysDirection.Up) + PhysHelper.UnrotateVector(Physics.gravity * rigidBody.mass / Time.fixedDeltaTime, rigidBody.rotation).y;
 
     public float VehicleVelocity => Vector3.Dot(rigidBody.linearVelocity, rigidBody.transform.forward);
 
@@ -118,18 +118,20 @@ public class BycicleEngine : MonoBehaviour
         
         if (driveWheelHasContact)
         {
-            Vector3 vehicleVelocity1 = PhysHelper.UnrotateForces(rigidBody, Time.fixedDeltaTime, ForceMode.VelocityChange);
+            Vector3 driveWheelGroundVelocity = driveWheelCollider.GetGroundVelocity(Time.fixedDeltaTime);
+            Vector3 vehicleVelocity1 = PhysHelper.UnrotateForces(rigidBody, driveWheelGroundVelocity, Time.fixedDeltaTime, ForceMode.VelocityChange);
             float driveSideGripLimit = PhysHelper.GetMaxLateralGripImpulse(vehicleVelocity1, DownImpulse * .5f, driveWheel.GetTireMaterial(), driveWheel.GetGroundMaterial());
-            Vector3 sideFriction1 = rigidBody.transform.right * Mathf.Clamp(PhysHelper.ExtractForce(rigidBody, Time.fixedDeltaTime, ForceMode.Impulse, PhysDirection.Right), -driveSideGripLimit, driveSideGripLimit);
+            Vector3 sideFriction1 = rigidBody.transform.right * Mathf.Clamp(PhysHelper.ExtractForce(rigidBody, driveWheelGroundVelocity, Time.fixedDeltaTime, ForceMode.Impulse, PhysDirection.Right), -driveSideGripLimit, driveSideGripLimit);
 
             rigidBody.AddForce(-sideFriction1, ForceMode.Impulse);
         }
 
         if (steeringWheelHasContact)
         {
-            Vector3 vehicleVelocity2 = PhysHelper.UnrotateVector(PhysHelper.UnrotateForces(rigidBody, Time.fixedDeltaTime, ForceMode.VelocityChange), steeringHandles.GetLocalRotation());
+            Vector3 steeringWheelGroundVelocity = steeringWheelCollider.GetGroundVelocity(Time.fixedDeltaTime);
+            Vector3 vehicleVelocity2 = PhysHelper.UnrotateVector(PhysHelper.UnrotateForces(rigidBody, steeringWheelGroundVelocity, Time.fixedDeltaTime, ForceMode.VelocityChange), steeringHandles.GetLocalRotation());
             float steeringSideGripLimit = PhysHelper.GetMaxLateralGripImpulse(vehicleVelocity2, DownImpulse * .5f, steeringWheel.GetTireMaterial(), steeringWheel.GetGroundMaterial());
-            Vector3 sideFriction2 = rigidBody.transform.right * Mathf.Clamp(PhysHelper.ExtractForce(rigidBody, Time.fixedDeltaTime, ForceMode.Impulse, PhysDirection.Right), -steeringSideGripLimit, steeringSideGripLimit);
+            Vector3 sideFriction2 = rigidBody.transform.right * Mathf.Clamp(PhysHelper.ExtractForce(rigidBody, steeringWheelGroundVelocity, Time.fixedDeltaTime, ForceMode.Impulse, PhysDirection.Right), -steeringSideGripLimit, steeringSideGripLimit);
 
             rigidBody.AddForce(-sideFriction2, ForceMode.Impulse);
 
@@ -171,7 +173,7 @@ public class BycicleEngine : MonoBehaviour
 
         if (driveWheelHasContact)
         {
-            impulsesEquation.Add(rigidBody);
+            impulsesEquation.Add(rigidBody, getAverageGroundVelocity(Time.fixedDeltaTime));
 
             if (steeringWheelHasContact)
             {                
@@ -189,7 +191,8 @@ public class BycicleEngine : MonoBehaviour
             {
                 steeringImpulse = EqualizeSteeringWheel(impulsesEquation);
 
-                float vehicleDeltaImpulse = impulsesEquation.CommonImpulse - PhysHelper.ExtractForce(rigidBody, Time.fixedDeltaTime, ForceMode.Impulse, PhysDirection.Forward);
+                Vector3 driveWheelGroundVelocity = driveWheelCollider.GetGroundVelocity(Time.fixedDeltaTime);
+                float vehicleDeltaImpulse = impulsesEquation.CommonImpulse - PhysHelper.ExtractForce(rigidBody, driveWheelGroundVelocity, Time.fixedDeltaTime, ForceMode.Impulse, PhysDirection.Forward);
 
                 vehicleDriveImpulse = vehicleDeltaImpulse - steeringImpulse;
                 vehicleSteeringImpulse = vehicleDeltaImpulse - vehicleDriveImpulse;
@@ -198,7 +201,8 @@ public class BycicleEngine : MonoBehaviour
             {
                 steeringImpulse = 0f;
 
-                vehicleDriveImpulse = impulsesEquation.CommonImpulse - PhysHelper.ExtractForce(rigidBody, Time.fixedDeltaTime, ForceMode.Impulse, PhysDirection.Forward);
+                Vector3 steeringWheelGroundVelocity = steeringWheelCollider.GetGroundVelocity(Time.fixedDeltaTime);
+                vehicleDriveImpulse = impulsesEquation.CommonImpulse - PhysHelper.ExtractForce(rigidBody, steeringWheelGroundVelocity, Time.fixedDeltaTime, ForceMode.Impulse, PhysDirection.Forward);
                 vehicleSteeringImpulse = 0f;
             }
         }
@@ -211,12 +215,13 @@ public class BycicleEngine : MonoBehaviour
                 vehicleDriveImpulse = 0f;
 
                 impulsesEquation = new ImpulseEquation()
-                    .Add(rigidBody)
+                    .Add(rigidBody, getAverageGroundVelocity(Time.fixedDeltaTime))
                     .Add(steeringWheel);
 
                 steeringImpulse = EqualizeSteeringWheel(impulsesEquation);
 
-                vehicleSteeringImpulse = impulsesEquation.CommonImpulse - PhysHelper.ExtractForce(rigidBody, Time.fixedDeltaTime, ForceMode.Impulse, PhysDirection.Forward);
+                Vector3 steeringWheelGroundVelocity = steeringWheelCollider.GetGroundVelocity(Time.fixedDeltaTime);
+                vehicleSteeringImpulse = impulsesEquation.CommonImpulse - PhysHelper.ExtractForce(rigidBody, steeringWheelGroundVelocity, Time.fixedDeltaTime, ForceMode.Impulse, PhysDirection.Forward);
             }
             else
             {
@@ -268,7 +273,7 @@ public class BycicleEngine : MonoBehaviour
     {
         var rightImpulse = impulsesEquation
             .Clone()
-            .Remove(rigidBody);
+            .Remove(rigidBody, getAverageGroundVelocity(Time.fixedDeltaTime));
 
         var vehiclePotentialImpulse = impulsesEquation
             .Clone()
@@ -276,9 +281,14 @@ public class BycicleEngine : MonoBehaviour
 
         float steeringGripLimit = PhysHelper.GetMaxLongitudalGripImpulse(vehiclePotentialImpulse, rightImpulse, DownImpulse * .5f, steeringWheel.GetTireMaterial(), steeringWheel.GetGroundMaterial());
         float vehicleFullImpulse = Mathf.Clamp(impulsesEquation.CommonVelocity * rigidBody.mass, vehiclePotentialImpulse.CommonImpulse - steeringGripLimit, vehiclePotentialImpulse.CommonImpulse + steeringGripLimit);
-        float steeringFullImpulse = impulsesEquation.Clone().Remove(rigidBody, vehicleFullImpulse).CommonImpulse;
+        float steeringFullImpulse = impulsesEquation.Clone().Remove(rigidBody, getAverageGroundVelocity(Time.fixedDeltaTime), vehicleFullImpulse).CommonImpulse;
         impulsesEquation.Remove(steeringWheel, steeringFullImpulse);
 
         return steeringFullImpulse - steeringWheel.LinearImpulse;
+    }
+
+    private Vector3 getAverageGroundVelocity(float deltaTime)
+    {
+        return (steeringWheelCollider.GetGroundVelocity(deltaTime) + driveWheelCollider.GetGroundVelocity(deltaTime)) * .5f;
     }
 }

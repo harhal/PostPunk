@@ -1,6 +1,5 @@
 using System.Collections.Generic;
-using System.Linq;
-using UnityEditor;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class BycicleWheelCollider : MonoBehaviour
@@ -124,5 +123,26 @@ public class BycicleWheelCollider : MonoBehaviour
             Vector3 direction = mx.MultiplyVector(chordaRotation * Vector3.forward);
             contactPoints.AddRange(Physics.RaycastAll(source, direction, chordaLength, raycastMask));
         }
+    }
+
+    public Vector3 GetGroundVelocity(float deltaTime)
+    {
+        Vector3 sum = Vector3.zero;
+
+        if (contactPoints.Count <= 0)
+        {
+            return sum;
+        }
+
+        foreach (RaycastHit contactPoint in ContactPoints)
+        {
+            DynamicGround ground = contactPoint.collider.GetComponent<DynamicGround>();
+            if (ground != null)
+            {
+                sum += ground.GetVelocityAt(contactPoint.point, deltaTime);
+            }
+        }
+
+        return sum / contactPoints.Count;
     }
 }

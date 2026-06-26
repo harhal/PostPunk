@@ -25,6 +25,15 @@ public class FollowCamera : MonoBehaviour
     private Vector3 focusCOffset = Vector3.zero;
 
     [SerializeField]
+    private Quaternion cameraRotOffset = Quaternion.identity;
+
+    [SerializeField]
+    private Vector2 cameraRotationInput = Vector2.zero;
+
+    [SerializeField]
+    private Vector2 cameraRotationInputVelocity = Vector2.one;
+
+    [SerializeField]
     private float snapAngle = 1f;
 
     [SerializeField]
@@ -35,6 +44,9 @@ public class FollowCamera : MonoBehaviour
 
     [SerializeField]
     private float baseAngSpeed = 90f;
+
+    [SerializeField]
+    private float baseVelocity = 60f;
 
     void Awake()
     {
@@ -51,24 +63,28 @@ public class FollowCamera : MonoBehaviour
             cam.fieldOfView = Mathf.Lerp(cam.fieldOfView, 60f, Time.deltaTime);
         }
 
-        Vector3 perfectPosition = getPerfectTransform().GetPosition();
-        Vector3 newPosition = perfectPosition;
+        Vector3 angles = cameraRotOffset.eulerAngles;
+        cameraRotOffset = Quaternion.Euler(Mathf.Repeat(angles.x + cameraRotationInput.y * cameraRotationInputVelocity.y * Time.deltaTime, 360f), Mathf.Repeat(angles.x + 90f + cameraRotationInput.x * cameraRotationInputVelocity.x * Time.deltaTime, 180f) - 90f, 0f);
 
+        Vector3 perfectPosition = getPerfectTransform().GetPosition() + PhysHelper.UnrotateForces(target, Vector3.zero, Time.deltaTime, ForceMode.VelocityChange) * Time.deltaTime;;
+        float dist = Vector3.Distance(perfectPosition, cam.transform.position);
+        Vector3 newPosition = Vector3.Lerp(cam.transform.position, perfectPosition, Mathf.Clamp01(baseVelocity * Time.deltaTime / dist ));
+        
         Quaternion lookAtFocusRotation = getPerfectTransform().rotation;
         float deltaAngle = Quaternion.Angle(cam.transform.rotation, lookAtFocusRotation);
         float angSpeed = MathF.Sqrt(deltaAngle / baseAngSpeed) * baseAngSpeed;
         Quaternion newRotation = deltaAngle < snapAngle 
             ? lookAtFocusRotation 
-            : Quaternion.Lerp(cam.transform.rotation, lookAtFocusRotation, deltaAngle / (angSpeed * Time.deltaTime));
+            : Quaternion.Lerp(cam.transform.rotation, lookAtFocusRotation, Mathf.Clamp01(angSpeed * Time.deltaTime / deltaAngle));
         
         cam.transform.SetPositionAndRotation(newPosition, newRotation);
     }
 
     Matrix4x4 getPerfectTransform()
     {
-        Vector3 focusCLocalPos = target.rotation * focusCOffset;
+        Vector3 focusCLocalPos = cameraRotOffset * target.rotation * focusCOffset;
         Vector3 camDirection = (focusCLocalPos - focusAOffset).normalized;
-        Vector3 additionalTargetDir = target.rotation * focusBOffset - focusCLocalPos;
+        Vector3 additionalTargetDir = cameraRotOffset * target.rotation * focusBOffset - focusCLocalPos;
 
         float h = Vector3.Cross(-camDirection, additionalTargetDir).magnitude;
         Vector3 camLocalPos = focusCLocalPos + Vector3.Project(additionalTargetDir, -camDirection) - camDirection * (h / Mathf.Tan(cam.fieldOfView * .5f * Mathf.Deg2Rad));
@@ -102,5 +118,10 @@ public class FollowCamera : MonoBehaviour
         UnityEditor.Handles.color = Color.green;        
         UnityEditor.Handles.DrawWireCube(target.position + target.rotation * focusCOffset, Vector3.one * .05f);
         UnityEditor.Handles.Label(target.position + target.rotation * focusCOffset, "C");
+    }
+
+    public void ApplyLookAroundInput(Vector2 input)
+    {
+        cameraRotationInput = -input;
     }
 }

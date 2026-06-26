@@ -9,6 +9,9 @@ public class CourierController : MonoBehaviour
     [SerializeField]
     private CharacterModeSwitcher characterSwitcher;
 
+    [SerializeField]
+    private FollowCamera followCamera;
+
     void OnMovement(InputValue input)
     {
         if (!enabled)
@@ -43,5 +46,15 @@ public class CourierController : MonoBehaviour
         {
             characterSwitcher.SetCharacterMode(CharacterMode.Bycicle);
         }
+    }
+
+    void OnLookAround(InputValue input)
+    {        
+        if (!enabled)
+        {
+            return;
+        }
+
+        followCamera.ApplyLookAroundInput(input.Get<Vector2>());
     }
 }

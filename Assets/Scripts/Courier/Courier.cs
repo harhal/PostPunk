@@ -42,6 +42,8 @@ public class Courier : MonoBehaviour
 
     bool bGrounded = true;
 
+    DynamicGround dynamicGround;
+
     public bool IsGrounded()
     {
         return bGrounded;
@@ -72,15 +74,18 @@ public class Courier : MonoBehaviour
     void FixedUpdate()
     {
         Vector3 source = body.position + Vector3.down * capsuleHalfHeight;
-        bGrounded = Physics.Raycast(source, Vector3.down, raycastGap, raycastMask);
+        bGrounded = Physics.Raycast(source, Vector3.down, out RaycastHit hitInfo, raycastGap, raycastMask);
 
         animator.SetBool(groundedAnimatorField, bGrounded);
+
+        dynamicGround = bGrounded ? hitInfo.collider.GetComponent<DynamicGround>() : null;
+        Vector3 groundVelocity = dynamicGround != null ? dynamicGround.GetVelocityAt(hitInfo.point, Time.fixedDeltaTime) : Vector3.zero;
         
         if (IsGrounded())
         {
-            body.linearVelocity = body.rotation * lastInput * walkVelocity;
+            body.linearVelocity = body.rotation * lastInput * walkVelocity + groundVelocity;
         }
-        Vector3 localVelocity = PhysHelper.UnrotateForces(body, Time.fixedDeltaTime, ForceMode.VelocityChange);
+        Vector3 localVelocity = PhysHelper.UnrotateForces(body, groundVelocity, Time.fixedDeltaTime, ForceMode.VelocityChange);
         animator.SetFloat(forwardVelocityAnimatorField, localVelocity.z / walkVelocity);
         animator.SetFloat(sidewayVelocityAnimatorField, localVelocity.x / walkVelocity);
     }
